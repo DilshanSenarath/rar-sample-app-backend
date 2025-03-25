@@ -1,0 +1,6 @@
+{
+    "clientId": "aU6b95Ayv3BGG0BVnCd4WjuErQ4a",
+    "clientSecret": "0PIRPnm1H2nlFfJasOURoDX2cWqVuSjnicnbaxS2b3Ea",
+    "baseUrl": "https://127.0.0.1:9443",
+    "allowedOrigins": [ "https://localhost:3000" ]
+}
