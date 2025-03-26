@@ -50,12 +50,15 @@ app.post("/booking-creation", async (req, res) => {
         const bookingType = req?.body?.bookingType;
         const totalAmount = req?.body?.totalAmount;
 
+        // Check whether the token is available.
         if (!token) {
             return res.status(401).json({
                 error: "Unauthorized",
                 description: "Authorization details are missing.",
             })
         }
+
+        // Introspect the token to get the authorization details.
         const response = await axios.post(`${IDPConfig.baseUrl}/oauth2/introspect`, {
             token
         }, {
@@ -66,6 +69,8 @@ app.post("/booking-creation", async (req, res) => {
             },
             httpsAgent: agent // Attach the custom agent
         });
+
+        // Validate the authorization details with the booking type and total amount.
         if (response.status == 200) {
             const authorizationDetails = response?.data?.["authorization_details"];
             if (!authorizationDetails?.[0] || authorizationDetails[0].bookingType !== bookingType) {
@@ -80,12 +85,12 @@ app.post("/booking-creation", async (req, res) => {
                     description: "You are exceeding the allowed limit for booking creation.",
                 });
             }
-            return res.status(200).json({ data: "Success" });
+            return res.status(201).json({ data: "Success" });
         }
         res.status(500).json({ error: "Internal Server Error", description: "Failed to process the request." });
     } catch (error) {
         console.error("Error while introspecting the token: ", error);
-        res.status(500).json({ error: error });
+        res.status(500).json({ error: "Internal Server Error", description: "Failed to process the request." });
     }
 });
 
